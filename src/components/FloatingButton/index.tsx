@@ -1,6 +1,6 @@
 import React from "react";
-import { TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet } from "react-native";
+import { FAB } from "react-native-paper";
 import { styles } from "./styles";
 
 interface Props {
@@ -8,9 +8,5 @@ interface Props {
 }
 
 export const FloatingButton = ({ onPress }: Props) => {
-  return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Ionicons name="add" size={28} color="#fff" />
-    </TouchableOpacity>
-  );
+  return <FAB icon="plus" style={styles.fab} onPress={onPress} color="#fff" />;
 };

@@ -1,5 +1,6 @@
 import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
+import { View } from "react-native";
+import { Chip } from "react-native-paper";
 import { Priority } from "../../types/task.types";
 import { styles } from "./styles";
 
@@ -18,22 +19,23 @@ const priorities: { label: string; value: Priority | "all" }[] = [
 export const PriorityFilter = ({ selected, onSelect }: Props) => {
   return (
     <View style={styles.container}>
-      {priorities.map((p) => (
-        <TouchableOpacity
-          key={p.value}
-          onPress={() => onSelect(p.value)}
-          style={[styles.button, selected === p.value && styles.activeButton]}
-        >
-          <Text
+      {priorities.map((p) => {
+        const isSelected = selected === p.value;
+        return (
+          <Chip
+            key={p.value}
+            selected={isSelected}
+            onPress={() => onSelect(p.value)}
             style={[
-              styles.buttonText,
-              selected === p.value && styles.activeButtonText,
+              styles.chip,
+              isSelected ? styles.activeChip : styles.inactiveChip,
             ]}
+            textStyle={isSelected ? styles.activeText : styles.inactiveText}
           >
             {p.label}
-          </Text>
-        </TouchableOpacity>
-      ))}
+          </Chip>
+        );
+      })}
     </View>
   );
 };

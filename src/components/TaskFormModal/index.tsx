@@ -1,78 +1,103 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { View, Keyboard, TouchableWithoutFeedback } from "react-native";
+import { ITask, Priority } from "../../types/task.types";
 import {
-  Modal,
-  View,
+  Button,
+  Dialog,
+  Portal,
   Text,
   TextInput,
-  Button,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Platform,
-} from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import { ITask, Priority } from "../../types/task.types";
+  RadioButton,
+} from "react-native-paper";
 import { styles } from "./styles";
 
 interface Props {
   visible: boolean;
   onClose: () => void;
-  onAddTask: (task: ITask) => void;
+  onSubmit: (task: ITask) => void;
+  taskToEdit?: ITask | null;
 }
 
-export const TaskFormModal = ({ visible, onClose, onAddTask }: Props) => {
+export const TaskFormModal = ({
+  visible,
+  onClose,
+  onSubmit,
+  taskToEdit,
+}: Props) => {
   const [name, setName] = useState("");
   const [priority, setPriority] = useState<Priority>("low");
 
-  const handleAdd = () => {
+  useEffect(() => {
+    if (taskToEdit) {
+      setName(taskToEdit.name);
+      setPriority(taskToEdit.priority);
+    } else {
+      setName("");
+      setPriority("low");
+    }
+  }, [taskToEdit, visible]);
+
+  const handleSubmit = () => {
     if (!name.trim()) return;
 
-    onAddTask({
-      id: Date.now().toString(),
+    const newTask: ITask = {
+      id: taskToEdit?.id ?? Date.now().toString(),
       name,
       priority,
-      completed: false,
-    });
-    setName("");
-    setPriority("low");
+      completed: taskToEdit?.completed ?? false,
+    };
+
+    onSubmit(newTask);
     onClose();
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.overlay}>
+    <Portal>
+      <Dialog visible={visible} onDismiss={onClose}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
-            <Text style={styles.title}>Nova Tarefa</Text>
-            <TextInput
-              placeholder="Nome da tarefa"
-              value={name}
-              onChangeText={setName}
-              style={styles.input}
-            />
+            <Dialog.Title>
+              {taskToEdit ? "Editar Tarefa" : "Nova Tarefa"}
+            </Dialog.Title>
 
-            {Platform.OS === "ios" ? (
-              <Text>Picker não suportado nativamente no iOS</Text>
-            ) : (
-              <Picker
-                selectedValue={priority}
-                onValueChange={(itemValue) =>
-                  setPriority(itemValue as Priority)
-                }
-                style={styles.picker}
-              >
-                <Picker.Item label="Baixa" value="low" />
-                <Picker.Item label="Média" value="medium" />
-                <Picker.Item label="Alta" value="high" />
-              </Picker>
-            )}
+            <Dialog.Content>
+              <View style={styles.content}>
+                <TextInput
+                  label="Nome da tarefa"
+                  value={name}
+                  onChangeText={setName}
+                  mode="outlined"
+                  style={styles.input}
+                />
 
-            <View style={styles.actions}>
-              <Button title="Cancelar" color="#aaa" onPress={onClose} />
-              <Button title="Adicionar" onPress={handleAdd} />
-            </View>
+                <Text variant="labelLarge" style={styles.priorityLabel}>
+                  Prioridade
+                </Text>
+
+                <RadioButton.Group
+                  onValueChange={(value) => setPriority(value as Priority)}
+                  value={priority}
+                >
+                  <RadioButton.Item label="Baixa" value="low" />
+                  <RadioButton.Item label="Média" value="medium" />
+                  <RadioButton.Item label="Alta" value="high" />
+                </RadioButton.Group>
+              </View>
+            </Dialog.Content>
+
+            <Dialog.Actions>
+              <View style={styles.actions}>
+                <Button onPress={onClose} textColor="#888">
+                  Cancelar
+                </Button>
+                <Button onPress={handleSubmit}>
+                  {taskToEdit ? "Salvar" : "Adicionar"}
+                </Button>
+              </View>
+            </Dialog.Actions>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </Modal>
+        </TouchableWithoutFeedback>
+      </Dialog>
+    </Portal>
   );
 };

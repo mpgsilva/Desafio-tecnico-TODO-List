@@ -4,24 +4,26 @@ export const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     gap: 8,
-    marginBottom: 16,
     flexWrap: "wrap",
+    marginBottom: 16,
   },
-  button: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    backgroundColor: "#eee",
+  chip: {
+    marginRight: 8,
+    borderRadius: 16,
   },
-  activeButton: {
+  activeChip: {
     backgroundColor: "#007bff",
   },
-  buttonText: {
-    color: "#333",
-    fontSize: 14,
+  inactiveChip: {
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ccc",
   },
-  activeButtonText: {
+  activeText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  inactiveText: {
+    color: "#333",
   },
 });
