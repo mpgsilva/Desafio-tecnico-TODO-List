@@ -116,8 +116,8 @@ Além do requisito obrigatório que faltou, implementei ajustes visuais e funcio
 
 1. Clone o repositório:
 ```bash
-[git clone https://github.com/mpgsilva/Desafio-tecnico-TODO-List.git
-cd todo-app
+git clone https://github.com/mpgsilva/Desafio-tecnico-TODO-List.git
+
 ```
 2. Instale as dependências:
 ```bash
